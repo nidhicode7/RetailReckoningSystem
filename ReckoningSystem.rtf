@@ -1,0 +1,638 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww28600\viewh18000\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 import math\
+import os\
+import smtplib\
+import tempfile\
+from tkinter import *\
+from tkinter import message box\
+\
+title = 'Veena Lahari'\
+iconFileName = 'RupeeIconForBilling Project.ico'\
+size = '1270x685'\
+headingLabelTitle = 'Retail Reckoning System'\
+fontStyle = 'times new roman'\
+headerFontSize = 30\
+boldFont = 'bold'\
+backgroundColor = 'MediumPurple4'\
+# backgroundColor = 'grey1'\
+fontColor = 'gold'\
+labelBorderSize = 12\
+fontSize = 15\
+fieldFontColor = 'white'\
+fieldBorderSize = 7\
+entryWidth = 7\
+totalEntryWidth = 10\
+customerDetailsFrameTitle = 'Customer Details'\
+customerDetailsTitlesList = ['Customer Name', 'Phone Number', 'Bill Number']\
+customerDetailsLabelList = list()\
+customerDetailsEntryList = list()\
+\
+searchButtonTitle = 'Search'\
+buttonsTitlesList = ['Total', 'Bill', 'Email', 'Print', 'Clear']\
+buttonsButtonObjects = list()\
+\
+cosmeticsFrameTitle = 'Cosmetics'\
+groceryFrameTitle = 'Grocery'\
+coldDrinksFrameTitle = 'Cool Drinks'\
+billFrameTitle = 'Bill'\
+rupeeText = ' Rs. '\
+minusSymbol = ' - '\
+percentageSymbol = ' %'\
+zeroRupeesText = '0 Rs. '\
+# Cosmetics List\
+cosmeticsPriceList = [70, 100, 100, 190, 200, 40]\
+cosmeticsNamesList = ['Shampoo', 'Blush', 'Primer', 'Bronzer', 'Hair Gel', 'Powder']\
+cosmeticsTitlesList = [None] * 6\
+index = 0\
+for cosmeticsName in cosmeticsNamesList:\
+    cosmeticsTitlesList[index] = cosmeticsName + minusSymbol + str(cosmeticsPriceList[index]) + rupeeText\
+    index += 1\
+cosmeticsLabelList = list()\
+cosmeticsEntryList = list()\
+\
+# Groceries List\
+groceryPriceList = [40, 110, 180, 80, 50, 45]\
+groceryNamesList = ['Rice', 'Oil', 'Daal', 'Wheat', 'Sugar', 'Tea']\
+groceryTitlesList = [None] * 6\
+index = 0\
+for groceryName in groceryNamesList:\
+    groceryTitlesList[index] = groceryName + minusSymbol + str(groceryPriceList[index]) + rupeeText\
+    index += 1\
+groceryLabelList = list()\
+groceryEntryList = list()\
+\
+# Cool Drinks List\
+coolDrinksPriceList = [20, 30, 35, 25, 10, 15]\
+coolDrinksNamesList = ['Maaza', 'Pepsi', 'Sprite', 'Frooti', 'Mirinda', 'Pulpy']\
+coolDrinksTitlesList = [None] * 6\
+index = 0\
+for coolDrinksName in coolDrinksNamesList:\
+    coolDrinksTitlesList[index] = coolDrinksName + minusSymbol + str(coolDrinksPriceList[index]) + rupeeText\
+    index += 1\
+coolDrinksLabelList = list()\
+coolDrinksEntryList = list()\
+\
+# tax list\
+cosmeticTaxPercentage = 0.12\
+groceryTaxPercentage = 0.05\
+coldDrinksTaxPercentage = 0.08\
+\
+billFrameHeight = 14.2\
+billFrameWidth = 55\
+billMenuFrameTitle = 'Bill Menu'\
+# Bill Menu List\
+billMenuTitlesList = ['Cosmetic Price', 'Grocery Price', 'Cool Drinks Price', 'Cosmetic Tax', 'Grocery Tax',\
+                      'Cool Drinks Tax', 'Total Amount ']\
+billMenuLabelList = list()\
+billMenuEntryList = list()\
+\
+errorText = 'Error'\
+successText = 'Success'\
+customerNameEmptyMessage = 'Customer Name Required'\
+customerMobileEmptyMessage = 'Customer Mobile Number Required'\
+customerMobileSizeNot10Message = 'Customer Mobile Number Should be 10 digits'\
+customerMobileErrorMessage = 'Customer Mobile Number Should be digits only'\
+productsEmptyMessage = 'No Products are Selected'\
+productQuantityNotInDigit = ' Quantity should be non negative digits'\
+confirmText = 'Confirm'\
+saveBillYesOrNo = 'Do You want to Save the Bill?'\
+billSavingConfirmation = ' Bill Saved successfully'\
+searchFieldEmptyMessage = 'Please Enter a Bill Number'\
+searchBillNotFoundMessage = ' is InValid'\
+printValidation = 'No Bill Content Found'\
+printCommandText = 'print'\
+billNumberTitle = 'Bill Number'\
+billNumber = 1\
+billPath = 'bills/'\
+billSavingExtension = '.txt'\
+totalNotDone = 'Please Press Total First'\
+welComeMessage = '---------------WelCome to Super Market-----------------\\n'\
+starLine = '\\n*******************\\n'\
+columnNamesInBill = 'Product\\t\\tPrice\\tQuantity\\tTotal'\
+# Email Sending Related\
+emailSendingLabelTitle = 'SENDER'\
+senderEmailIdText = "Sender's EmailId"\
+senderEmailKeyText = "Sender's Email Key"\
+receiverEmailIdText = "Receiver's EmailId"\
+emailReceiverLabelTitle = 'RECEIVER'\
+emailIdEntryWidth = 23\
+emailLabelPadx = 10\
+emailLabelPady = 8\
+messageText = 'Message'\
+sendButtonText = 'SEND'\
+senderEmailIdTextEmptyMessage = "Sender's EmailId is empty"\
+senderEmailKeyTextEmptyMessage = "Sender's Password is empty"\
+receiverEmailIdTextEmptyMessage = "Receiver's EmailId is empty"\
+emailSubject = headingLabelTitle + ' Bill Sending \\n'\
+emailContentEmptyMessage = 'Email Content is Empty'\
+mailSentSuccessMessage = 'Bill sent Successfully to Email '\
+somethingWentWrongMessage = 'Something went Wrong Try again'\
+emailSmtp = 'smtp.gmail.com'\
+emailSmtpPort = 587\
+senderEmailId = 'poloju.pranathi27@gmail.com'\
+senderEmailKey = 'ideiykwqeykxhzaj'\
+searchBillStatus = False\
+\
+\
+def deleteAllBillLevelFields():\
+    for index in range(0, len(billMenuEntryList)):\
+        billMenuEntryList[index].delete(0, END)\
+\
+\
+def doCosmeticTotal():\
+    cosmeticTotal = 0\
+    for index in range(0, len(cosmeticsEntryList)):\
+        quantity = cosmeticsEntryList[index].get()\
+        try:\
+            price = cosmeticsPriceList[index] * int(quantity)\
+            cosmeticTotal += price\
+        except:\
+            if (quantity != ''):\
+                messagebox.showerror(errorText, cosmeticsNamesList[index] + productQuantityNotInDigit)\
+\
+    cosmeticSum = 0.0\
+    if (cosmeticTotal > 0):\
+        billMenuEntryList[0].insert(0, str(cosmeticTotal) + rupeeText)\
+        cosmeticTax = cosmeticTotal * cosmeticTaxPercentage\
+        cosmeticTax = format(cosmeticTax, ".2f")\
+        billMenuEntryList[3].insert(0, str(cosmeticTax) + rupeeText)\
+        cosmeticSum = math.ceil(cosmeticTotal + float(cosmeticTax))\
+    return cosmeticSum\
+\
+\
+def doGroceryTotal():\
+    groceryTotal = 0\
+    for index in range(0, len(groceryEntryList)):\
+        quantity = groceryEntryList[index].get()\
+        try:\
+            price = groceryPriceList[index] * int(quantity)\
+            groceryTotal += price\
+        except:\
+            if (quantity != ''):\
+                messagebox.showerror(errorText, groceryNamesList[index] + productQuantityNotInDigit)\
+    grocerySum = 0.0\
+    if (groceryTotal > 0):\
+        billMenuEntryList[1].insert(0, str(groceryTotal) + rupeeText)\
+        groceryTax = groceryTotal * groceryTaxPercentage\
+        groceryTax = format(groceryTax, ".2f")\
+        billMenuEntryList[4].insert(0, str(groceryTax) + rupeeText)\
+        grocerySum = math.ceil(groceryTotal + float(groceryTax))\
+    return grocerySum\
+\
+\
+def doColdDrinksTotal():\
+    coldDrinksTotal = 0\
+    for index in range(0, len(coolDrinksEntryList)):\
+        quantity = coolDrinksEntryList[index].get()\
+        try:\
+            price = coolDrinksPriceList[index] * int(quantity)\
+            coldDrinksTotal += price\
+        except:\
+            if (quantity != ''):\
+                messagebox.showerror(errorText, coolDrinksNamesList[index] + productQuantityNotInDigit)\
+    coldDrinksSum = 0.0\
+    if (coldDrinksTotal > 0):\
+        billMenuEntryList[2].insert(0, str(coldDrinksTotal) + rupeeText)\
+        coldDrinksTax = coldDrinksTotal * coldDrinksTaxPercentage\
+        coldDrinksTax = format(coldDrinksTax, ".2f")\
+        billMenuEntryList[5].insert(0, str(coldDrinksTax) + rupeeText)\
+        coldDrinksSum = math.ceil(coldDrinksTotal + float(coldDrinksTax))\
+    return coldDrinksSum\
+\
+\
+def total():\
+    textarea.delete(1.0, END)\
+    global productsSelected\
+    productsSelected = False\
+    deleteAllBillLevelFields()\
+    cosmeticTotal = doCosmeticTotal()\
+    groceryTotal = doGroceryTotal()\
+    coldDrinksTotal = doColdDrinksTotal()\
+    total = cosmeticTotal + groceryTotal + coldDrinksTotal\
+    global globalTotal\
+    globalTotal = 0\
+    if (total > 0):\
+        billMenuEntryList[6].insert(0, str(total) + rupeeText)\
+        productsSelected = True\
+        globalTotal = total\
+    else:\
+        productsSelected = False\
+        messagebox.showerror(errorText, productsEmptyMessage)\
+\
+\
+if not os.path.exists(billPath):\
+    os.mkdir(billPath)\
+\
+\
+def saveBill():\
+    global billNumber\
+    confirmation = messagebox.askyesno(confirmText, saveBillYesOrNo)\
+    if (confirmation):\
+        billContent = textarea.get(1.0, END)\
+        file = open(billPath + str(billNumber) + billSavingExtension, 'w')\
+        file.write(billContent)\
+        file.close()\
+        messagebox.showinfo(successText, str(billNumber) + billSavingConfirmation)\
+        billNumber += 1\
+\
+\
+def bill():\
+    textarea.delete(1.0, END)\
+    global productsSelected\
+    total()\
+    if (productsSelected != True):\
+        print("productsEmptyMessage - " + productsEmptyMessage)\
+    elif (customerDetailsEntryList[0].get() == ''):\
+        messagebox.showerror(errorText, customerNameEmptyMessage)\
+    elif (customerDetailsEntryList[1].get() == ''):\
+        messagebox.showerror(errorText, customerMobileEmptyMessage)\
+    elif (len(customerDetailsEntryList[1].get()) != 10):\
+        messagebox.showerror(errorText, customerMobileSizeNot10Message)\
+    else:\
+        try:\
+            mobile = int(customerDetailsEntryList[1].get())\
+        except:\
+            messagebox.showerror(errorText, customerMobileErrorMessage)\
+            return 0\
+        if (billMenuEntryList[0].get() == '' and billMenuEntryList[2].get() == '' and billMenuEntryList[3].get() == ''):\
+            messagebox.showerror(errorText, productsEmptyMessage)\
+        elif (billMenuEntryList[0].get() == zeroRupeesText and billMenuEntryList[2].get() == zeroRupeesText\
+              and billMenuEntryList[3].get() == zeroRupeesText):\
+            if (productsSelected):\
+                messagebox.showerror(errorText, totalNotDone)\
+            else:\
+                messagebox.showerror(errorText, productsEmptyMessage)\
+        else:\
+            textarea.insert(END, welComeMessage)\
+            textarea.insert(END, billNumberTitle + " - " + str(billNumber) + '\\n')\
+            name = customerDetailsEntryList[0].get()\
+            textarea.insert(END, customerDetailsTitlesList[0] + " - " + str(name) + "\\n")\
+            phone = customerDetailsEntryList[1].get()\
+            textarea.insert(END, customerDetailsTitlesList[1] + " - " + str(phone))\
+            textarea.insert(END, starLine)\
+            textarea.insert(END, columnNamesInBill)\
+            textarea.insert(END, starLine)\
+            # cosmetics\
+            for index in range(0, len(cosmeticsEntryList)):\
+                try:\
+                    if (cosmeticsEntryList[index].get() != '' and int(cosmeticsEntryList[index].get()) > 0):\
+                        textarea.insert(END,\
+                                        cosmeticsNamesList[index] + '\\t\\t' + str(cosmeticsPriceList[index]) + '\\t' +\
+                                        cosmeticsEntryList[index].get() + '\\t' + str(\
+                                            cosmeticsPriceList[index] * int(\
+                                                cosmeticsEntryList[index].get())) + rupeeText + "\\n")\
+                except:\
+                    print("bill exception for productName  - " + cosmeticsNamesList[index])\
+            # groceries\
+            for index in range(0, len(groceryEntryList)):\
+                try:\
+                    if (groceryEntryList[index].get() != '' and int(groceryEntryList[index].get()) > 0):\
+                        textarea.insert(END,\
+                                        groceryNamesList[index] + '\\t\\t' + str(groceryPriceList[index]) + '\\t' +\
+                                        groceryEntryList[index].get() + '\\t' + str(\
+                                            groceryPriceList[index] * int(\
+                                                groceryEntryList[index].get())) + rupeeText + "\\n")\
+                except:\
+                    print("bill exception for productName  - " + groceryNamesList[index])\
+            # Cool Drinks List\
+            for index in range(0, len(coolDrinksEntryList)):\
+                try:\
+                    if (coolDrinksEntryList[index].get() != '' and int(coolDrinksEntryList[index].get()) > 0):\
+                        textarea.insert(END,\
+                                        coolDrinksNamesList[index] + '\\t\\t' + str(\
+                                            coolDrinksPriceList[index]) + '\\t' +\
+                                        coolDrinksEntryList[index].get() + '\\t' + str(\
+                                            coolDrinksPriceList[index] * int(\
+                                                coolDrinksEntryList[index].get())) + rupeeText + "\\n")\
+                except:\
+                    print("bill exception for productName  - " + coolDrinksNamesList[index])\
+\
+            textarea.insert(END, starLine)\
+            if (billMenuEntryList[3].get() != '' and billMenuEntryList[3].get() != zeroRupeesText):\
+                textarea.insert(END, '\\t' + billMenuTitlesList[3] + minusSymbol + str(\
+                    cosmeticTaxPercentage) + percentageSymbol + ' -\\t' +\
+                                billMenuEntryList[3].get() + '\\n')\
+            if (billMenuEntryList[4].get() != '' and billMenuEntryList[4].get() != zeroRupeesText):\
+                textarea.insert(END, '\\t' + billMenuTitlesList[4] + minusSymbol + str(\
+                    groceryTaxPercentage) + percentageSymbol + ' -\\t' + billMenuEntryList[4].get() + '\\n')\
+            if (billMenuEntryList[5].get() != '' and billMenuEntryList[5].get() != zeroRupeesText):\
+                textarea.insert(END, '\\t' + billMenuTitlesList[5] + minusSymbol + str(\
+                    coldDrinksTaxPercentage) + percentageSymbol + ' -\\t' + billMenuEntryList[5].get() + '\\n')\
+            textarea.insert(END, '\\n')\
+            if (globalTotal > 0 and billMenuEntryList[6].get != ''):\
+                textarea.insert(END, billMenuTitlesList[6] + ' -\\t' + billMenuEntryList[6].get() + '\\n')\
+            textarea.insert(END, starLine)\
+            saveBill()\
+\
+\
+def searchBill():\
+    global searchBillStatus\
+    billId = customerDetailsEntryList[2].get()\
+    billFound = False\
+    if (billId == ''):\
+        error = searchFieldEmptyMessage\
+        if (searchBillStatus == True):\
+            error = searchFieldEmptyMessage + " or " + printValidation\
+        messagebox.showerror(errorText, error)\
+    else:\
+        billFileName = billId + billSavingExtension\
+        for fileName in os.listdir(billPath):\
+            if (fileName == billFileName):\
+                billFound = True\
+                file = open(billPath + billFileName, 'r')\
+                textarea.delete(1.0, END)\
+                for data in file:\
+                    textarea.insert(END, data)\
+                file.close()\
+                break\
+        if (billFound != True):\
+            messagebox.showerror(errorText, customerDetailsTitlesList[2] + billId + searchBillNotFoundMessage)\
+    searchBillStatus = False\
+    return billFound\
+\
+\
+def printBill():\
+    global searchBillStatus\
+    searchBillStatus = True\
+    textareaContent = textarea.get(1.0, END)\
+    if (textareaContent == '' or textareaContent == '\\n'):\
+        billFound = searchBill()\
+        if (billFound == True):\
+            billContent = textarea.get(1.0, END)\
+            if (billContent == '' or billContent == ' ' or billContent == '\\n'):\
+                messagebox.showerror(errorText, printValidation)\
+            else:\
+                file = tempfile.mktemp(billSavingExtension)\
+                open(file, 'w').write(billContent)\
+                os.startfile(file, printCommandText)\
+    else:\
+        file = tempfile.mktemp(billSavingExtension)\
+        open(file, 'w').write(textareaContent)\
+        os.startfile(file, printCommandText)\
+\
+\
+def createSendEmailWindow():\
+    def triggerEmail():\
+        # senderEmail = senderMailIdEntry.get()\
+        # emailKey=senderEmailKeyTextEntry.get()\
+        receiverEmail = receiverMailIdEntry.get()\
+        mailContent = emailTextarea.get(1.0, END)\
+        if (senderEmailId == ''):\
+            messagebox.showerror(errorText, senderEmailIdTextEmptyMessage, parent=emailWindow)\
+        elif (senderEmailKey == ''):\
+            messagebox.showerror(errorText, senderEmailKeyTextEmptyMessage, parent=emailWindow)\
+        elif (receiverEmail == ''):\
+            messagebox.showerror(errorText, receiverEmailIdTextEmptyMessage, parent=emailWindow)\
+        elif (mailContent == ''):\
+            messagebox.showerror(errorText, emailContentEmptyMessage, parent=emailWindow)\
+        else:\
+            mailContent = emailSubject + emailTextarea.get(1.0, END)\
+            try:\
+                smtp = smtplib.SMTP(emailSmtp, emailSmtpPort)\
+                smtp.starttls()\
+                smtp.login(senderEmailId, senderEmailKey)\
+                smtp.sendmail(senderEmailId, receiverEmail, mailContent)\
+                smtp.quit()\
+                messagebox.showinfo(successText, mailSentSuccessMessage, parent=emailWindow)\
+                emailWindow.destroy()\
+            except:\
+                messagebox.showerror(errorText, somethingWentWrongMessage, parent=emailWindow)\
+\
+    emailWindow = Toplevel()\
+    emailWindow.grab_set()\
+    emailWindow.title(headingLabelTitle)\
+    emailWindow.iconbitmap(iconFileName)\
+    emailWindow.config(bg=backgroundColor)\
+    emailWindow.resizable(0, 0)\
+    # senderFrame = LabelFrame(emailWindow, text=emailSendingLabelTitle, font=(fontStyle, headerFontSize, boldFont),\
+    #                          fg=fontColor, bg=backgroundColor, bd=labelBorderSize, relief=GROOVE)\
+    # senderFrame.grid(row=0, column=0, padx=billFrameWidth)\
+    # senderMailIdLabel=Label(senderFrame, text=senderEmailIdText, font=(fontStyle,fontSize,boldFont)\
+    #             ,bg=backgroundColor, fg=fieldFontColor)\
+    # senderMailIdLabel.grid(row=0, column=0, padx=emailLabelPadx, pady=emailLabelPady)\
+    # senderMailIdEntry=Entry(senderFrame, font=(fontStyle,fontSize,boldFont), bd=fieldBorderSize, width=emailIdEntryWidth)\
+    # senderMailIdEntry.grid(row=0, column=1, padx=emailLabelPadx, pady=emailLabelPady)\
+    #\
+    # senderEmailKeyTextLabel = Label(senderFrame, text=senderEmailKeyText, font=(fontStyle, fontSize, boldFont)\
+    #                           , bg=backgroundColor, fg=fieldFontColor)\
+    # senderEmailKeyTextLabel.grid(row=1, column=0, padx=emailLabelPadx, pady=emailLabelPady)\
+    # senderEmailKeyTextEntry = Entry(senderFrame, font=(fontStyle, fontSize, boldFont), bd=fieldBorderSize, width=emailIdEntryWidth, show='*')\
+    # senderEmailKeyTextEntry.grid(row=1, column=1, padx=emailLabelPadx, pady=emailLabelPady)\
+    receiverFrame = LabelFrame(emailWindow, text=emailReceiverLabelTitle, font=(fontStyle, headerFontSize, boldFont),\
+                               fg=fontColor, bg=backgroundColor, bd=labelBorderSize, relief=GROOVE)\
+    receiverFrame.grid(row=0, column=0, padx=billFrameWidth)\
+    receiverMailIdLabel = Label(receiverFrame, text=receiverEmailIdText, font=(fontStyle, fontSize, boldFont)\
+                                , bg=backgroundColor, fg=fieldFontColor)\
+    receiverMailIdLabel.grid(row=0, column=0, padx=emailLabelPadx, pady=emailLabelPady)\
+    receiverMailIdEntry = Entry(receiverFrame, font=(fontStyle, fontSize, boldFont), bd=fieldBorderSize,\
+                                width=emailIdEntryWidth)\
+    receiverMailIdEntry.grid(row=0, column=1, padx=emailLabelPadx, pady=emailLabelPady)\
+\
+    messageLabel = Label(receiverFrame, text=messageText, font=(fontStyle, fontSize, boldFont)\
+                         , bg=backgroundColor, fg=fieldFontColor)\
+    messageLabel.grid(row=1, column=0, padx=emailLabelPadx, pady=emailLabelPady, columnspan=2)\
+\
+    emailTextarea = Text(receiverFrame, font=(fontStyle, fontSize, boldFont), width=billFrameWidth, height=11,\
+                         bd=2, yscrollcommand=scrollbar.set, relief=GROOVE)\
+    emailTextarea.grid(row=2, column=0, columnspan=2)\
+    emailTextarea.delete(1.0, END)\
+    emailTextarea.insert(END, textarea.get(1.0, END))\
+\
+    sendButton = Button(emailWindow, text=sendButtonText, font=(fontStyle, fontSize, boldFont)\
+                        , bd=fieldBorderSize, bg=backgroundColor, fg=fontColor, command=triggerEmail)\
+    sendButton.grid(row=1, column=0, padx=10)\
+    emailWindow.mainloop()\
+\
+\
+def sendEmail():\
+    global searchBillStatus\
+    searchBillStatus = True\
+    textareaContent = textarea.get(1.0, END)\
+    if (textareaContent == '' or textareaContent == '\\n'):\
+        billFound = searchBill()\
+        if (billFound == True):\
+            billContent = textarea.get(1.0, END)\
+            if (billContent == '' or billContent == ' ' or billContent == '\\n'):\
+                messagebox.showerror(errorText, printValidation)\
+            else:\
+                createSendEmailWindow()\
+    else:\
+        createSendEmailWindow()\
+\
+\
+def deleteAllEntries():\
+    for index in range(0, len(customerDetailsEntryList)):\
+        customerDetailsEntryList[index].delete(0, END)\
+\
+    for index in range(0, len(cosmeticsEntryList)):\
+        cosmeticsEntryList[index].delete(0, END)\
+\
+    for index in range(0, len(groceryEntryList)):\
+        groceryEntryList[index].delete(0, END)\
+\
+    for index in range(0, len(groceryEntryList)):\
+        coolDrinksEntryList[index].delete(0, END)\
+\
+    textarea.delete(1.0, END)\
+    deleteAllBillLevelFields()\
+\
+\
+def clear():\
+    deleteAllEntries()\
+\
+\
+root = Tk()\
+root.title(title)\
+root.geometry(size)\
+root.iconbitmap(iconFileName)\
+headingLabel = Label(root, text=headingLabelTitle, font=(fontStyle, headerFontSize, boldFont),\
+                     bg=backgroundColor, fg=fontColor, bd=labelBorderSize, relief=GROOVE)\
+headingLabel.pack(fill=X)\
+customer_details_frame = LabelFrame(root, text=customerDetailsFrameTitle, font=(fontStyle, fontSize, boldFont)\
+                                    , bg=backgroundColor, fg=fontColor, bd=labelBorderSize, relief=GROOVE)\
+customer_details_frame.pack(fill=X, pady=10)\
+\
+index = 0\
+column = 0\
+for customerDetailsTitle in customerDetailsTitlesList:\
+    customerDetailsLabel = Label(customer_details_frame, text=customerDetailsTitle, font=(fontStyle, fontSize, boldFont)\
+                                 , bg=backgroundColor, fg=fieldFontColor)\
+    customerDetailsLabel.grid(row=0, column=column, padx=10)\
+    column += 1\
+    customerDetailsEntry = Entry(customer_details_frame, font=(fontStyle, fontSize, boldFont), bd=fieldBorderSize)\
+    customerDetailsEntry.grid(row=0, column=column, padx=10)\
+\
+    customerDetailsLabelList.append(customerDetailsLabel)\
+    customerDetailsEntryList.append(customerDetailsEntry)\
+    column += 1\
+    index += 1\
+\
+searchButton = Button(customer_details_frame, text=searchButtonTitle, font=(fontStyle, fontSize, boldFont)\
+                      , bd=fieldBorderSize, command=searchBill, bg=backgroundColor, fg=fontColor)\
+searchButton.grid(row=0, column=6, padx=10)\
+\
+productsFrame = Frame(root)\
+productsFrame.pack()\
+\
+cosmeticsFrame = LabelFrame(productsFrame, text=cosmeticsFrameTitle, font=(fontStyle, fontSize, boldFont)\
+                            , bg=backgroundColor, fg=fontColor, bd=labelBorderSize, relief=GROOVE)\
+cosmeticsFrame.grid(row=0, column=0)\
+\
+index = 0\
+row = 0\
+for cosmeticsTitle in cosmeticsTitlesList:\
+    cosmeticsLabel = Label(cosmeticsFrame, text=cosmeticsTitle, font=(fontStyle, fontSize, boldFont)\
+                           , bg=backgroundColor, fg=fieldFontColor)\
+    cosmeticsLabel.grid(row=row, column=0, pady=3)\
+\
+    cosmeticsEntry = Entry(cosmeticsFrame, font=(fontStyle, fontSize, boldFont), bd=fieldBorderSize, width=entryWidth)\
+    cosmeticsEntry.grid(row=row, column=1, pady=3)\
+\
+    cosmeticsLabelList.append(cosmeticsLabel)\
+    cosmeticsEntryList.append(cosmeticsEntry)\
+    row += 1\
+    index += 1\
+\
+groceryFrame = LabelFrame(productsFrame, text=groceryFrameTitle, font=(fontStyle, fontSize, boldFont)\
+                          , bg=backgroundColor, fg=fontColor, bd=labelBorderSize, relief=GROOVE)\
+groceryFrame.grid(row=0, column=1)\
+\
+index = 0\
+row = 0\
+for groceryTitle in groceryTitlesList:\
+    groceryLabel = Label(groceryFrame, text=groceryTitle, font=(fontStyle, fontSize, boldFont)\
+                         , bg=backgroundColor, fg=fieldFontColor)\
+    groceryLabel.grid(row=row, column=0, pady=3)\
+\
+    groceryEntry = Entry(groceryFrame, font=(fontStyle, fontSize, boldFont), bd=fieldBorderSize, width=entryWidth)\
+    groceryEntry.grid(row=row, column=1, pady=3)\
+\
+    groceryLabelList.append(groceryLabel)\
+    groceryEntryList.append(groceryEntry)\
+    row += 1\
+    index += 1\
+\
+coldDrinksFrame = LabelFrame(productsFrame, text=coldDrinksFrameTitle, font=(fontStyle, fontSize, boldFont)\
+                             , bg=backgroundColor, fg=fontColor, bd=labelBorderSize, relief=GROOVE)\
+coldDrinksFrame.grid(row=0, column=2)\
+\
+index = 0\
+row = 0\
+for coolDrinksTitle in coolDrinksTitlesList:\
+    coolDrinksLabel = Label(coldDrinksFrame, text=coolDrinksTitle, font=(fontStyle, fontSize, boldFont)\
+                            , bg=backgroundColor, fg=fieldFontColor)\
+    coolDrinksLabel.grid(row=row, column=0, pady=3)\
+\
+    coolDrinksEntry = Entry(coldDrinksFrame, font=(fontStyle, fontSize, boldFont), bd=fieldBorderSize, width=entryWidth)\
+    coolDrinksEntry.grid(row=row, column=1, pady=3)\
+\
+    coolDrinksLabelList.append(coolDrinksLabel)\
+    coolDrinksEntryList.append(coolDrinksEntry)\
+    row += 1\
+    index += 1\
+\
+billFrame = Frame(productsFrame, bg=backgroundColor, bd=labelBorderSize, relief=GROOVE)\
+billFrame.grid(row=0, column=3, padx=10, pady=3)\
+\
+billLabel = Label(billFrame, text=billFrameTitle, font=(fontStyle, fontSize, boldFont), bd=labelBorderSize,\
+                  relief=GROOVE)\
+billLabel.pack(fill=X)\
+\
+scrollbar = Scrollbar(billFrame, orient=VERTICAL)\
+scrollbar.pack(side=RIGHT, fill=Y)\
+\
+textarea = Text(billFrame, height=billFrameHeight, width=billFrameWidth, yscrollcommand=scrollbar.set)\
+textarea.pack()\
+scrollbar.config(command=textarea.yview)\
+\
+billMenuFrame = LabelFrame(root, text=billMenuFrameTitle, font=(fontStyle, fontSize, boldFont), bd=labelBorderSize\
+                           , fg=fontColor, relief=GROOVE, bg=backgroundColor)\
+billMenuFrame.pack(fill=X)\
+\
+index = 0\
+row = 0\
+column = 0\
+for billMenuTitle in billMenuTitlesList:\
+    billMenuLabel = Label(billMenuFrame, text=billMenuTitle, font=(fontStyle, fontSize, boldFont)\
+                          , bg=backgroundColor, fg=fieldFontColor)\
+    billMenuLabel.grid(row=row, column=column, padx=entryWidth, sticky='w')\
+\
+    billMenuEntry = Entry(billMenuFrame, font=(fontStyle, fontSize, boldFont), bd=fieldBorderSize,\
+                          width=totalEntryWidth)\
+    billMenuEntry.grid(row=row, column=column + 1, padx=10)\
+\
+    billMenuLabelList.append(billMenuLabel)\
+    billMenuEntryList.append(billMenuEntry)\
+    row += 1\
+    index += 1\
+    if (index == 3):\
+        column = 2\
+        row = 0\
+    if (index == 6):\
+        column = 4\
+        row = 0\
+\
+buttonFrame = Frame(billMenuFrame, bd=labelBorderSize, relief=GROOVE)\
+buttonFrame.grid(row=1, column=4, columnspan=5, rowspan=2)\
+index = 0\
+column = 0\
+for buttonsTitle in buttonsTitlesList:\
+    button = Button(buttonFrame, text=buttonsTitle, font=(fontStyle, fontSize, boldFont), bd=fieldBorderSize\
+                    , width=fieldBorderSize, pady=entryWidth, bg=backgroundColor, fg=fontColor)\
+    button.grid(row=0, column=column, padx=10)\
+\
+    buttonsButtonObjects.append(button)\
+    column += 1\
+    index += 1\
+buttonsButtonObjects[0]['command'] = total\
+buttonsButtonObjects[1]['command'] = bill\
+buttonsButtonObjects[2]['command'] = sendEmail\
+buttonsButtonObjects[3]['command'] = printBill\
+buttonsButtonObjects[4]['command'] = clear\
+root.mainloop()}
